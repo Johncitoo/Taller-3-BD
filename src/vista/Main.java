@@ -1,3 +1,7 @@
+// Taller 3 entrega 2 Base de datos
+// Cristian Urqueta
+// Juan Contreras
+
 package vista;
 
 import Controlador.clienteControlador;

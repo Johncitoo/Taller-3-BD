@@ -1,19 +1,19 @@
-## Getting Started
+"# Taller-3-BD"
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Esta es la segunda entrega del taller 3 de Base de datos. Las últimas modificaciones que se realizaron fueron control de errores al ingresar letras en vez de números en los menús y la documentación del código.
 
-## Folder Structure
+Se utilizó el paquete "dao" para separar la lógica de acceso a la base de datos para una mejor gestión y además, ahorra código xd.
 
-The workspace contains two folders by default, where:
+Los paquetes contienen:
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+1. modelo: entidades del sistema
+2. dao: interacción con la base de datos
+3. servicio: la lógica
+4. controlador: maneja la interacción entre "vista" y "servicio"
+5. vista: aquí está el main para ingresar las credenciales, o sea, iniciar sesión
+6. util: facilita la conexión con la base de datos
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+Eso es todo chavales.
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-"# Taller-3-BD" 
+Dibuja una estrella al final de la pagina si leiste todo xd

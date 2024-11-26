@@ -4,6 +4,7 @@ import modelo.Cliente;
 import servicio.CuentaServicio;
 import servicio.TransaccionServicio;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class clienteControlador {
@@ -28,30 +29,47 @@ public class clienteControlador {
      *
      * @param cliente instancia del cliente que inició sesión y que interactuará con el sistema.
      */
-    public void mostrarMenuCliente(Cliente cliente) {
-        Scanner scanner = new Scanner(System.in);
-        int opcion;
+public void mostrarMenuCliente(Cliente cliente) {
+    Scanner scanner = new Scanner(System.in);
+    int opcion = -1;
 
-        do {
+    do {
+        try {
             System.out.println("=== Menú del Cliente ===");
-            System.out.println("1. Realizar Depósito");
+            System.out.println("1. Realizar Deposito");
             System.out.println("2. Realizar Retiro");
             System.out.println("3. Realizar Transferencia");
             System.out.println("4. Consultar Saldo");
             System.out.println("5. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
             opcion = scanner.nextInt();
-
+            scanner.nextLine();
             switch (opcion) {
-                case 1 -> realizarDeposito(cliente, scanner);
-                case 2 -> realizarRetiro(cliente, scanner);
-                case 3 -> realizarTransferencia(cliente, scanner);
-                case 4 -> consultarSaldo(cliente, scanner);
-                case 5 -> System.out.println("Saliendo del menú...");
-                default -> System.out.println("Opción no válida.");
+                case 1:
+                    realizarDeposito(cliente, scanner);
+                    break;
+                case 2:
+                    realizarRetiro(cliente, scanner);
+                    break;
+                case 3:
+                    realizarTransferencia(cliente, scanner);
+                    break;
+                case 4:
+                    consultarSaldo(cliente, scanner);
+                    break;
+                case 5:
+                    System.out.println("Bye");
+                    break;
+                default:
+                    System.out.println("Opcion no valida. Intente nuevamente.");
+                    break;
             }
-        } while (opcion != 5);
-    }
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Estas ingresando una letra");
+            scanner.nextLine();
+        }
+    } while (opcion != 5);
+}
 
     /**
      * Método para realizar un depósito en una cuenta específica.
@@ -69,9 +87,9 @@ public class clienteControlador {
         double monto = scanner.nextDouble();
 
         if (cuentaServicio.realizarDeposito(idCuenta, monto)) {
-            System.out.println("Depósito realizado con éxito.");
+            System.out.println("Deposito realizado con exito.");
         } else {
-            System.out.println("Error al realizar el depósito.");
+            System.out.println("Error al realizar el deposito.");
         }
     }
 
@@ -91,7 +109,7 @@ public class clienteControlador {
         double monto = scanner.nextDouble();
 
         if (cuentaServicio.realizarRetiro(idCuenta, monto)) {
-            System.out.println("Retiro realizado con éxito.");
+            System.out.println("Retiro realizado con exito.");
         } else {
             System.out.println("Error al realizar el retiro.");
         }
@@ -115,7 +133,7 @@ public class clienteControlador {
         double monto = scanner.nextDouble();
 
         if (transaccionServicio.realizarTransferencia(idCuentaOrigen, idCuentaDestino, monto)) {
-            System.out.println("Transferencia realizada con éxito.");
+            System.out.println("Transferencia realizada con exito.");
         } else {
             System.out.println("Error al realizar la transferencia.");
         }
@@ -137,7 +155,7 @@ public class clienteControlador {
         if (saldo >= 0) {
             System.out.println("El saldo de la cuenta es: $" + saldo);
         } else {
-            System.out.println("Error al consultar el saldo.");
+            System.out.println("Error al consultar el saldo");
         }
     }
 }

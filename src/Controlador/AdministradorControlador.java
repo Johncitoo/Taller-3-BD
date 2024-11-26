@@ -8,10 +8,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AdministradorControlador {
 
+
+    // private final para que una vez inicializado, no puedan apuntar a una instancia distinta
     private final CuentaServicio cuentaServicio;
     private final TransaccionServicio transaccionServicio;
 
@@ -35,24 +38,44 @@ public class AdministradorControlador {
         int opcion;
 
         do {
-            System.out.println("=== Menu del Administrador ===");
-            System.out.println("1. Consultar Historial de Transacciones");
-            System.out.println("2. Generar Reportes Financieros");
-            System.out.println("3. Revisar Cuentas Inactivas");
-            System.out.println("4. Configurar Usuarios");
-            System.out.println("5. Salir");
-            System.out.print("Seleccione una opcion: ");
-            opcion = scanner.nextInt();
+            try {
+                System.out.println("=== Menu del Administrador ===");
+                System.out.println("1. Consultar Historial de Transacciones");
+                System.out.println("2. Generar Reportes Financieros");
+                System.out.println("3. Revisar Cuentas Inactivas");
+                System.out.println("4. Configurar Usuarios");
+                System.out.println("5. Salir");
+                System.out.print("Seleccione una opcion: ");
 
-            switch (opcion) {
-                case 1 -> consultarHistorialTransacciones(scanner);
-                case 2 -> generarReportesFinancieros();
-                case 3 -> revisarCuentasInactivas(scanner);
-                case 4 -> configurarUsuarios(scanner);
-                case 5 -> System.out.println("Saliendo del menu...");
-                default -> System.out.println("Opcion no valida.");
+                opcion = scanner.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        consultarHistorialTransacciones(scanner);
+                        break;
+                    case 2:
+                        generarReportesFinancieros();
+                        break;
+                    case 3:
+                        revisarCuentasInactivas(scanner);
+                        break;
+                    case 4:
+                        configurarUsuarios(scanner);
+                        break;
+                    case 5:
+                        System.out.println("Bye");
+                        break;
+                    default:
+                        System.out.println("Opcion fuera de la lista");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: estas ingresando una letra.");
+                scanner.nextLine(); // evita el ciclo infinito
+                opcion = -1; // mantiene el menu activo hasta que se coloque un valor adecuado
             }
         } while (opcion != 5);
+
     }
 
     /**
@@ -65,10 +88,27 @@ public class AdministradorControlador {
     private void consultarHistorialTransacciones(Scanner scanner) {
         System.out.println("=== Consultar Historial de Transacciones ===");
         System.out.println("1. Ver todas las transacciones");
-        System.out.println("2. Filtrar por período de tiempo");
-        System.out.print("Seleccione una opcion: ");
-        int opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        System.out.println("2. Filtrar por periodo de tiempo");
+    
+        int opcion = -1;
+        while (true) {
+            try {
+                System.out.print("Seleccione una opción: ");
+                opcion = scanner.nextInt();
+                scanner.nextLine(); 
+    
+                if (opcion == 1 || opcion == 2) {
+                    break; // se repite hasta que ingrese un valor valido
+                } else {
+                    System.out.println("Opcion fuera de la lista");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: estas ingresando una letra");
+                scanner.nextLine();
+            }
+        }
+
+        // peticion a la base de datos
     
         String query;
         switch (opcion) {
@@ -77,19 +117,20 @@ public class AdministradorControlador {
                 mostrarHistorialTransacciones(query, null, null);
                 break;
             case 2:
-                System.out.print("Ingrese la fecha de inicio (YYYY-MM-DD): ");
+                System.out.print("Ingrese la fecha de inicio (año-mes-dia): ");
                 String fechaInicio = scanner.nextLine();
-                System.out.print("Ingrese la fecha de fin (YYYY-MM-DD): ");
+                System.out.print("Ingrese la fecha de fin (año-mes-dia): ");
                 String fechaFin = scanner.nextLine();
                 query = "SELECT * FROM Transaccion WHERE fecha BETWEEN ? AND ?";
                 mostrarHistorialTransacciones(query, fechaInicio, fechaFin);
                 break;
             default:
-                System.out.println("Opcion no valida.");
+                // En caso de
+                System.out.println("Error inesperado.");
                 break;
         }
     }
-    
+      
     /**
      * Método para mostrar el historial de transacciones según la consulta especificada.
      * Puede mostrar todas las transacciones o filtrarlas por un rango de fechas.
@@ -121,7 +162,7 @@ public class AdministradorControlador {
                 System.out.println("-------------------------------");
             }
         } catch (SQLException e) {
-            System.out.println("Error consultando el historial de transacciones: " + e.getMessage());
+            System.out.println("Error al intentar ver el historial de transacciones: " + e.getMessage());
         }
     }
 
@@ -137,10 +178,26 @@ public class AdministradorControlador {
         System.out.println("1. Saldo promedio de las cuentas");
         System.out.println("2. Cuentas con mayor número de transacciones");
         System.out.println("3. Vista general de ingresos netos");
-        System.out.print("Seleccione una opción: ");
+    
+        int opcion = -1;
         Scanner scanner = new Scanner(System.in);
-        int opcion = scanner.nextInt();
-        scanner.nextLine();
+    
+        while (true) {
+            try {
+                System.out.print("Seleccione una opción: ");
+                opcion = scanner.nextInt();
+                scanner.nextLine(); 
+    
+                if (opcion >= 1 && opcion <= 3) {
+                    break; // hasta que ingrese una opcion valida
+                } else {
+                    System.out.println("Opcion fuera de la lista");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: estas ingresando una letra");
+                scanner.nextLine(); 
+            }
+        }
     
         switch (opcion) {
             case 1:
@@ -153,11 +210,12 @@ public class AdministradorControlador {
                 generarIngresosNetos();
                 break;
             default:
-                System.out.println("Opción no válida.");
+                
+                System.out.println("Error inesperado.");
                 break;
         }
     }
-
+    
     /**
  * Método para generar un reporte de las cuentas con mayor número de transacciones.
  * Consulta la base de datos para identificar las cuentas más activas basándose
@@ -251,9 +309,9 @@ public class AdministradorControlador {
      */
     private void revisarCuentasInactivas(Scanner scanner) {
         System.out.println("=== Revisar Cuentas Inactivas ===");
-        System.out.print("Ingrese el número de días de inactividad: ");
+        System.out.print("Ingrese el numero de días de inactividad: ");
         int diasInactividad = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        scanner.nextLine(); 
     
         String query = """
             SELECT c.id_cuenta, c.saldo, c.fecha_creacion, p.nombre
@@ -301,9 +359,25 @@ public class AdministradorControlador {
         System.out.println("1. Agregar Usuario");
         System.out.println("2. Editar Usuario");
         System.out.println("3. Eliminar Usuario");
-        System.out.print("Seleccione una opción: ");
-        int opcion = scanner.nextInt();
-        scanner.nextLine();
+    
+        int opcion = -1;
+    
+        while (true) {
+            try {
+                System.out.print("Seleccione una opcion: ");
+                opcion = scanner.nextInt();
+                scanner.nextLine(); 
+    
+                if (opcion >= 1 && opcion <= 3) {
+                    break; 
+                } else {
+                    System.out.println("Opcion fuera de la lista");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: estas ingresando una letra");
+                scanner.nextLine();
+            }
+        }
     
         switch (opcion) {
             case 1:
@@ -316,10 +390,12 @@ public class AdministradorControlador {
                 eliminarUsuario(scanner);
                 break;
             default:
-                System.out.println("Opción no válida.");
+                // Esto no debería ocurrir debido al control de errores
+                System.out.println("Error inesperado.");
                 break;
         }
     }
+    
 
     /**
      * Método para agregar un nuevo usuario al sistema.
@@ -332,9 +408,9 @@ public class AdministradorControlador {
         System.out.println("=== Agregar Usuario ===");
         System.out.print("Nombre: ");
         String nombre = scanner.nextLine();
-        System.out.print("Dirección: ");
+        System.out.print("Direccion: ");
         String direccion = scanner.nextLine();
-        System.out.print("Teléfono: ");
+        System.out.print("Telefono: ");
         String telefono = scanner.nextLine();
         System.out.print("Correo: ");
         String correo = scanner.nextLine();
@@ -374,9 +450,9 @@ public class AdministradorControlador {
         scanner.nextLine();
         System.out.print("Nuevo Nombre: ");
         String nuevoNombre = scanner.nextLine();
-        System.out.print("Nueva Dirección: ");
+        System.out.print("Nueva Direccion: ");
         String nuevaDireccion = scanner.nextLine();
-        System.out.print("Nuevo Teléfono: ");
+        System.out.print("Nuevo Telefono: ");
         String nuevoTelefono = scanner.nextLine();
         System.out.print("Nuevo Correo: ");
         String nuevoCorreo = scanner.nextLine();
@@ -399,7 +475,7 @@ public class AdministradorControlador {
             if (rowsAffected > 0) {
                 System.out.println("Usuario editado exitosamente.");
             } else {
-                System.out.println("No se encontró un usuario con el ID especificado.");
+                System.out.println("No se encontro un usuario con el ID ingresado :(");
             }
         } catch (SQLException e) {
             System.out.println("Error editando usuario: " + e.getMessage());
@@ -429,13 +505,11 @@ public class AdministradorControlador {
             if (rowsAffected > 0) {
                 System.out.println("Usuario eliminado exitosamente.");
             } else {
-                System.out.println("No se encontró un usuario con el ID especificado.");
+                System.out.println("No se encontró un usuario con el ID ingresado :(");
             }
         } catch (SQLException e) {
             System.out.println("Error eliminando usuario: " + e.getMessage());
         }
     }
-    
-    
-    
+       
 }
