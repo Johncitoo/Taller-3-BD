@@ -11,11 +11,23 @@ public class clienteControlador {
     private final CuentaServicio cuentaServicio;
     private final TransaccionServicio transaccionServicio;
 
+    /**
+     * Constructor de la clase clienteControlador.
+     * Inicializa las instancias de los servicios necesarios para la gestión de cuentas y transacciones
+     * relacionadas con los clientes.
+     */
     public clienteControlador() {
         this.cuentaServicio = new CuentaServicio();
         this.transaccionServicio = new TransaccionServicio();
     }
 
+    /**
+     * Método para mostrar el menú del cliente.
+     * Proporciona opciones para realizar depósitos, retiros, transferencias y consultar el saldo.
+     * Solicita al cliente seleccionar una opción y ejecuta la acción correspondiente.
+     *
+     * @param cliente instancia del cliente que inició sesión y que interactuará con el sistema.
+     */
     public void mostrarMenuCliente(Cliente cliente) {
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -41,6 +53,15 @@ public class clienteControlador {
         } while (opcion != 5);
     }
 
+    /**
+     * Método para realizar un depósito en una cuenta específica.
+     * Solicita al cliente el ID de la cuenta y el monto a depositar.
+     * Llama al servicio correspondiente para realizar el depósito e informa
+     * si la operación fue exitosa o si ocurrió un error.
+     *
+     * @param cliente instancia del cliente que realiza el depósito.
+     * @param scanner objeto Scanner para capturar la entrada del cliente.
+     */
     private void realizarDeposito(Cliente cliente, Scanner scanner) {
         System.out.print("Ingrese el ID de la cuenta: ");
         int idCuenta = scanner.nextInt();
@@ -54,6 +75,15 @@ public class clienteControlador {
         }
     }
 
+    /**
+     * Método para realizar un retiro de una cuenta específica.
+     * Solicita al cliente el ID de la cuenta y el monto a retirar.
+     * Llama al servicio correspondiente para realizar el retiro e informa
+     * si la operación fue exitosa o si ocurrió un error.
+     *
+     * @param cliente instancia del cliente que realiza el retiro.
+     * @param scanner objeto Scanner para capturar la entrada del cliente.
+     */
     private void realizarRetiro(Cliente cliente, Scanner scanner) {
         System.out.print("Ingrese el ID de la cuenta: ");
         int idCuenta = scanner.nextInt();
@@ -67,6 +97,15 @@ public class clienteControlador {
         }
     }
 
+    /**
+     * Método para realizar una transferencia entre dos cuentas.
+     * Solicita al cliente los IDs de las cuentas de origen y destino, así como el monto a transferir.
+     * Llama al servicio correspondiente para realizar la transferencia e informa
+     * si la operación fue exitosa o si ocurrió un error.
+     *
+     * @param cliente instancia del cliente que realiza la transferencia.
+     * @param scanner objeto Scanner para capturar la entrada del cliente.
+     */
     private void realizarTransferencia(Cliente cliente, Scanner scanner) {
         System.out.print("Ingrese el ID de la cuenta de origen: ");
         int idCuentaOrigen = scanner.nextInt();
@@ -82,6 +121,14 @@ public class clienteControlador {
         }
     }
 
+    /**
+     * Método para consultar el saldo de una cuenta específica.
+     * Solicita al cliente el ID de la cuenta y consulta el saldo utilizando el servicio correspondiente.
+     * Muestra el saldo si la operación es exitosa o un mensaje de error en caso contrario.
+     *
+     * @param cliente instancia del cliente que consulta el saldo.
+     * @param scanner objeto Scanner para capturar la entrada del cliente.
+     */
     private void consultarSaldo(Cliente cliente, Scanner scanner) {
         System.out.print("Ingrese el ID de la cuenta: ");
         int idCuenta = scanner.nextInt();

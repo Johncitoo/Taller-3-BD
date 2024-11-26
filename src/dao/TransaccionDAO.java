@@ -10,6 +10,14 @@ import java.sql.SQLException;
 
 public class TransaccionDAO {
 
+    /**
+     * Método para insertar una nueva transacción en la base de datos.
+     * Utiliza los datos de una instancia de Transaccion para ejecutar una consulta SQL de inserción.
+     * Retorna true si la transacción fue insertada correctamente, o false si ocurrió un error.
+     *
+     * @param transaccion instancia de Transaccion con los datos a insertar en la base de datos.
+     * @return true si la transacción fue insertada exitosamente, false en caso de error.
+     */
     public boolean insertar(Transaccion transaccion) {
         String query = "INSERT INTO Transaccion (id_cuenta_origen, id_cuenta_destino, tipo_transaccion, monto, fecha) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();

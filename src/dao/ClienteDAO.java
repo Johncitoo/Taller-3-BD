@@ -10,6 +10,15 @@ import java.sql.SQLException;
 
 public class ClienteDAO {
 
+    /**
+     * Método para buscar un cliente en la base de datos utilizando su correo electrónico.
+     * Ejecuta una consulta SQL para obtener los datos del cliente asociado al correo proporcionado.
+     * Si el cliente es encontrado, retorna una instancia de la clase Cliente con sus datos.
+     * En caso contrario, retorna null.
+     *
+     * @param correo correo electrónico del cliente a buscar.
+     * @return instancia de Cliente si el correo existe en la base de datos, null si no se encuentra.
+     */
     public Cliente buscarPorCorreo(String correo) {
         String query = "SELECT * FROM PerfilCliente WHERE correo = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -34,6 +43,14 @@ public class ClienteDAO {
         return null;
     }
 
+    /**
+     * Método para insertar un nuevo cliente en la base de datos.
+     * Utiliza los datos del cliente proporcionado para ejecutar una consulta SQL de inserción.
+     * Retorna true si la inserción fue exitosa, o false si ocurrió un error.
+     *
+     * @param cliente instancia de Cliente con los datos a insertar en la base de datos.
+     * @return true si el cliente fue insertado correctamente, false en caso de error.
+     */
     public boolean insertar(Cliente cliente) {
         String query = "INSERT INTO PerfilCliente (nombre, direccion, telefono, correo, contrasena) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
@@ -52,6 +69,16 @@ public class ClienteDAO {
         return false;
     }
 
+    /**
+     * Método para buscar un cliente en la base de datos utilizando su correo electrónico y contraseña.
+     * Ejecuta una consulta SQL para validar las credenciales proporcionadas.
+     * Si las credenciales son correctas, retorna una instancia de la clase Cliente con los datos correspondientes.
+     * En caso contrario, retorna null.
+     *
+     * @param correo      correo electrónico del cliente.
+     * @param contrasena  contraseña del cliente.
+     * @return instancia de Cliente si las credenciales son válidas, null si no se encuentra o las credenciales son incorrectas.
+     */
     public Cliente buscarPorCredenciales(String correo, String contrasena) {
         String query = "SELECT * FROM PerfilCliente WHERE correo = ? AND contrasena = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -75,7 +102,5 @@ public class ClienteDAO {
             System.out.println("Error buscando cliente: " + e.getMessage());
         }
         return null;
-    }
-
-    
+    }  
 }

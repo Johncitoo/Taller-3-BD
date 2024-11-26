@@ -15,23 +15,33 @@ public class AdministradorControlador {
     private final CuentaServicio cuentaServicio;
     private final TransaccionServicio transaccionServicio;
 
+    /**
+     * Constructor de la clase AdministradorControlador.
+     * Inicializa las instancias de los servicios necesarios para la gestión de cuentas y transacciones.
+     */
     public AdministradorControlador() {
         this.cuentaServicio = new CuentaServicio();
         this.transaccionServicio = new TransaccionServicio();
     }
 
+    /**
+     * Método para mostrar el menú del administrador.
+     * Proporciona opciones para consultar el historial de transacciones,
+     * generar reportes financieros, revisar cuentas inactivas y configurar usuarios.
+     * Permite al administrador interactuar con el sistema mediante un menú interactivo.
+     */
     public void mostrarMenuAdministrador() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("=== Menú del Administrador ===");
+            System.out.println("=== Menu del Administrador ===");
             System.out.println("1. Consultar Historial de Transacciones");
             System.out.println("2. Generar Reportes Financieros");
             System.out.println("3. Revisar Cuentas Inactivas");
             System.out.println("4. Configurar Usuarios");
             System.out.println("5. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
             opcion = scanner.nextInt();
 
             switch (opcion) {
@@ -39,19 +49,24 @@ public class AdministradorControlador {
                 case 2 -> generarReportesFinancieros();
                 case 3 -> revisarCuentasInactivas(scanner);
                 case 4 -> configurarUsuarios(scanner);
-                case 5 -> System.out.println("Saliendo del menú...");
-                default -> System.out.println("Opción no válida.");
+                case 5 -> System.out.println("Saliendo del menu...");
+                default -> System.out.println("Opcion no valida.");
             }
         } while (opcion != 5);
     }
 
-    
-
+    /**
+     * Método para consultar el historial de transacciones.
+     * Permite al administrador ver todas las transacciones o filtrarlas por un período de tiempo.
+     * Solicita al usuario que elija una opción y ejecuta la consulta correspondiente.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del usuario.
+     */
     private void consultarHistorialTransacciones(Scanner scanner) {
         System.out.println("=== Consultar Historial de Transacciones ===");
         System.out.println("1. Ver todas las transacciones");
         System.out.println("2. Filtrar por período de tiempo");
-        System.out.print("Seleccione una opción: ");
+        System.out.print("Seleccione una opcion: ");
         int opcion = scanner.nextInt();
         scanner.nextLine(); // Limpiar el buffer
     
@@ -70,12 +85,20 @@ public class AdministradorControlador {
                 mostrarHistorialTransacciones(query, fechaInicio, fechaFin);
                 break;
             default:
-                System.out.println("Opción no válida.");
+                System.out.println("Opcion no valida.");
                 break;
         }
     }
     
-
+    /**
+     * Método para mostrar el historial de transacciones según la consulta especificada.
+     * Puede mostrar todas las transacciones o filtrarlas por un rango de fechas.
+     * Realiza la consulta SQL y muestra los resultados en la consola.
+     *
+     * @param query       consulta SQL que se ejecutará para recuperar las transacciones.
+     * @param fechaInicio fecha de inicio del rango de filtro (puede ser null si no se aplica filtro).
+     * @param fechaFin    fecha de fin del rango de filtro (puede ser null si no se aplica filtro).
+     */
     private void mostrarHistorialTransacciones(String query, String fechaInicio, String fechaFin) {
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -89,10 +112,10 @@ public class AdministradorControlador {
 
             System.out.println("=== Historial de Transacciones ===");
             while (rs.next()) {
-                System.out.println("ID Transacción: " + rs.getInt("id_transaccion"));
+                System.out.println("ID Transaccion: " + rs.getInt("id_transaccion"));
                 System.out.println("Cuenta Origen: " + rs.getInt("id_cuenta_origen"));
                 System.out.println("Cuenta Destino: " + rs.getInt("id_cuenta_destino"));
-                System.out.println("Tipo de Transacción: " + rs.getString("tipo_transaccion"));
+                System.out.println("Tipo de Transaccion: " + rs.getString("tipo_transaccion"));
                 System.out.println("Monto: " + rs.getDouble("monto"));
                 System.out.println("Fecha: " + rs.getDate("fecha"));
                 System.out.println("-------------------------------");
@@ -102,7 +125,13 @@ public class AdministradorControlador {
         }
     }
 
-
+    /**
+     * Método para generar reportes financieros.
+     * Proporciona opciones para calcular el saldo promedio de las cuentas,
+     * identificar las cuentas con mayor número de transacciones,
+     * y generar una vista general de los ingresos netos.
+     * Solicita al usuario seleccionar una opción y ejecuta la acción correspondiente.
+     */
     private void generarReportesFinancieros() {
         System.out.println("=== Generar Reportes Financieros ===");
         System.out.println("1. Saldo promedio de las cuentas");
@@ -111,7 +140,7 @@ public class AdministradorControlador {
         System.out.print("Seleccione una opción: ");
         Scanner scanner = new Scanner(System.in);
         int opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        scanner.nextLine();
     
         switch (opcion) {
             case 1:
@@ -129,6 +158,12 @@ public class AdministradorControlador {
         }
     }
 
+    /**
+ * Método para generar un reporte de las cuentas con mayor número de transacciones.
+ * Consulta la base de datos para identificar las cuentas más activas basándose
+ * en la cantidad de transacciones realizadas como origen o destino.
+ * Muestra las cinco cuentas con mayor actividad junto con el total de transacciones.
+ */
     private void generarCuentasMayorTransacciones() {
         String query = """
             SELECT c.id_cuenta, COUNT(t.id_transaccion) AS total_transacciones
@@ -154,7 +189,11 @@ public class AdministradorControlador {
         }
     }
     
-    
+    /**
+     * Método para generar un reporte del saldo promedio de las cuentas.
+     * Consulta la base de datos para calcular el promedio de los saldos
+     * de todas las cuentas registradas y muestra el resultado.
+     */
     private void generarSaldoPromedio() {
         String query = "SELECT AVG(saldo) AS saldo_promedio FROM cuenta";
     
@@ -170,6 +209,14 @@ public class AdministradorControlador {
         }
     }
     
+    /**
+     * Método para generar un reporte de ingresos netos.
+     * Calcula y muestra:
+     * - El total de depósitos realizados.
+     * - El total de retiros realizados.
+     * - El balance neto sumando depósitos y restando retiros.
+     * Realiza una consulta SQL sobre la tabla de transacciones para obtener los datos.
+     */
     private void generarIngresosNetos() {
         String query = """
             SELECT 
@@ -194,7 +241,14 @@ public class AdministradorControlador {
         }
     }
     
-
+    /**
+     * Método para revisar cuentas inactivas.
+     * Permite al administrador consultar cuentas que no han registrado movimientos
+     * durante un período especificado por el usuario.
+     * Solicita el número de días de inactividad y realiza una consulta SQL para identificar dichas cuentas.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del usuario.
+     */
     private void revisarCuentasInactivas(Scanner scanner) {
         System.out.println("=== Revisar Cuentas Inactivas ===");
         System.out.print("Ingrese el número de días de inactividad: ");
@@ -232,7 +286,16 @@ public class AdministradorControlador {
         }
     }
     
-
+    /**
+     * Método para configurar usuarios en el sistema.
+     * Permite al administrador realizar las siguientes operaciones:
+     * - Agregar un nuevo usuario.
+     * - Editar la información de un usuario existente.
+     * - Eliminar un usuario.
+     * Solicita al usuario seleccionar una opción y ejecuta la acción correspondiente.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del usuario.
+     */
     private void configurarUsuarios(Scanner scanner) {
         System.out.println("=== Configuración de Usuarios ===");
         System.out.println("1. Agregar Usuario");
@@ -240,7 +303,7 @@ public class AdministradorControlador {
         System.out.println("3. Eliminar Usuario");
         System.out.print("Seleccione una opción: ");
         int opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        scanner.nextLine();
     
         switch (opcion) {
             case 1:
@@ -258,6 +321,13 @@ public class AdministradorControlador {
         }
     }
 
+    /**
+     * Método para agregar un nuevo usuario al sistema.
+     * Solicita al administrador ingresar la información del usuario, como nombre, dirección,
+     * teléfono, correo y contraseña. Luego, inserta los datos en la base de datos.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del administrador.
+     */
     private void agregarUsuario(Scanner scanner) {
         System.out.println("=== Agregar Usuario ===");
         System.out.print("Nombre: ");
@@ -289,11 +359,19 @@ public class AdministradorControlador {
         }
     }
     
+    /**
+     * Método para editar la información de un usuario existente.
+     * Solicita al administrador el ID del usuario a editar y los nuevos valores
+     * para los campos nombre, dirección, teléfono, correo y contraseña.
+     * Actualiza los datos en la base de datos.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del administrador.
+     */
     private void editarUsuario(Scanner scanner) {
         System.out.println("=== Editar Usuario ===");
         System.out.print("Ingrese el ID del usuario a editar: ");
         int idCliente = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        scanner.nextLine();
         System.out.print("Nuevo Nombre: ");
         String nuevoNombre = scanner.nextLine();
         System.out.print("Nueva Dirección: ");
@@ -328,6 +406,13 @@ public class AdministradorControlador {
         }
     }
 
+    /**
+     * Método para eliminar un usuario del sistema.
+     * Solicita al administrador el ID del usuario a eliminar y elimina el registro correspondiente
+     * en la base de datos. Informa si el usuario fue eliminado exitosamente o si no se encontró el ID.
+     *
+     * @param scanner objeto Scanner para capturar la entrada del administrador.
+     */
     private void eliminarUsuario(Scanner scanner) {
         System.out.println("=== Eliminar Usuario ===");
         System.out.print("Ingrese el ID del usuario a eliminar: ");
